@@ -1,0 +1,63 @@
+name: CI/CD Pipeline - Node.js with Docker
+
+on: 
+  
+  push:
+    branches:
+      - main
+     
+  pull_request: 
+     
+     branches: 
+       - main
+
+  workflow_dispatch:  
+    
+
+jobs: 
+   
+   build-and-test:
+      runs-on: ubuntu-latest
+
+      steps: 
+         ## checkout your code
+         - name: checkout repository
+           uses: actions/checkout@v4
+
+         - name: Show files
+           run: ls ubuntu-latest
+         
+         - name: Setup Node.js
+           uses: actions/setup-node@v4
+           with: 
+              node-version: 18
+
+         - name: Install Dependncies
+           run : npm Install
+           working-directory: ./data-volumes-03-adj-node-code
+
+       
+   Docker-build: 
+       runs-on: ubuntu-latest
+       needs: build-and-test
+
+
+       steps: 
+          
+          - name: checkout repository
+            uses: actions/checkout@v4
+
+          ## Build Docker images
+
+          - name: Build Docker images
+            run: |
+              docker build -t my-node-feedback-app:latest ./data-volumes-03-adj-node-code
+
+         ## Run Docker container
+          - name: Run Docker container
+            run: |
+              docker run --rm -d -p 3000:80 --name feedback-app my-node-feedback-app:latest
+              sleep 5
+              docker ps -a
+      
+
