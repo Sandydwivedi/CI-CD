@@ -33,7 +33,7 @@ jobs:
               node-version: 18
 
          - name: Install Dependncies
-           run : npm Install
+           run : npm install
            working-directory: ./data-volumes-03-adj-node-code
 
        
